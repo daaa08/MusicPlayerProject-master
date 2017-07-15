@@ -27,13 +27,14 @@ public class ListActivity extends AppCompatActivity implements ListAdapter.Callb
     RecyclerView recyclerView;
     TextView txtTitleL, txtSingerL;
     ImageView imgAlbumL;
-    ImageButton btnPlayL, btnMenuL, btnSearchL;
+    ImageButton btnPlayL, btnMenuL, btnSearchL, btnPauseL, btnReStartL;
     ListAdapter adapter;
 
     List<Data.Music> datas = CurrentMusic.Instance;
 
     Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-    private static MediaPlayer player = null;
+    private MediaPlayer player = null;
+    Boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,8 @@ public class ListActivity extends AppCompatActivity implements ListAdapter.Callb
         txtSingerL = (TextView)findViewById(R.id.txtSingerL);
         imgAlbumL = (ImageView)findViewById(R.id.imgAlbumL);
         btnPlayL = (ImageButton)findViewById(R.id.btnPlayL);
+        btnPauseL = (ImageButton)findViewById(R.id.btnPauseL);
+        btnReStartL = (ImageButton)findViewById(R.id.btnReStartL);
 
         adapter = new ListAdapter(this);
         CurrentMusic.Instance = Data.read(this);
@@ -136,6 +139,31 @@ public class ListActivity extends AppCompatActivity implements ListAdapter.Callb
                 player = MediaPlayer.create(ListActivity.this, musicUri);
                 player.setLooping(false);
                 player.start();
+
+                btnPlayL.setVisibility(View.INVISIBLE);
+                btnPauseL.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btnReStartL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                player.start();
+                isPlaying = true;
+                btnPauseL.setVisibility(View.VISIBLE);
+                btnReStartL.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        btnPauseL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                player.pause();
+                isPlaying = false;
+                btnPauseL.setVisibility(View.INVISIBLE);
+                btnReStartL.setVisibility(View.VISIBLE);
+
             }
         });
 

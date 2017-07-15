@@ -23,6 +23,8 @@ import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
 import java.util.List;
 
+import static com.example.da08.musicplayerproject.domain.CurrentMusic.currentPosition;
+
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener, ThumbNailAdapter.StartYoutube {
 
@@ -35,7 +37,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     ImageButton btnShareP, btnUploadP, btnPlayP, btnNextP, btnPreP, btnLikeP, btnMenu, btnClose, btnPauseP, btnReStartP;
     Uri MUSIC_PLAY = null;
     List<Data.Music> datas = CurrentMusic.Instance;
-    int position = CurrentMusic.currentPosition;
+    int position = currentPosition;
 
     DetailAdapter adapter = new DetailAdapter(datas);
 
@@ -45,11 +47,20 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
 
     class SeekBarThread extends Thread {
+
         @Override
         public void run() {
             // 씨크바 막대기 조금씩 움직이기 (노래 끝날 때까지 반복)
+
+
             while (isPlaying) {
-                seekBar.setProgress(player.getCurrentPosition());
+                    seekBar.setProgress(player.getCurrentPosition());
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -100,20 +111,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (seekBar.getMax() == progress) {
-                    isPlaying = false;
-                    player.stop();
-                }
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                isPlaying = false;
-                player.pause();
-            }
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -123,6 +122,21 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 player.start();
                 new SeekBarThread().start();
             }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                isPlaying = false;
+                player.pause();
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (seekBar.getMax() == progress) {
+                    isPlaying = false;
+                    player.stop();
+                }
+            }
+
         });
     }
 
@@ -194,14 +208,14 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         player.setLooping(false);
         player.start();
 
-//        int a = player.getDuration(); // 노래의 재생시간(miliSecond)
-//        seekBar.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-//        new SeekBarThread().start(); // 씨크바 그려줄 쓰레드 시작
-//        isPlaying = true; // 씨크바 쓰레드 반복 하도록
+        int a = player.getDuration(); // 노래의 재생시간(miliSecond)
+        seekBar.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
+        new SeekBarThread().start(); // 씨크바 그려줄 쓰레드 시작
+        isPlaying = true; // 씨크바 쓰레드 반복 하도록
     }
 
     public void Next() {
-        player.release();
+//        player.release();
         position++;
         musicUri = datas.get(position).musicUri;
         if (player != null) {
@@ -216,11 +230,18 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         txtSingerP.setText(datas.get(position).artist);
         viewPager.setCurrentItem(position);
 
+        int a = player.getDuration(); // 노래의 재생시간(miliSecond)
+        new SeekBarThread().start(); // 씨크바 그려줄 쓰레드 시작
+        seekBar.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
+
+        isPlaying = true; // 씨크바 쓰레드 반복 하도록
+
+
     }
 
     public void Pre() {
         Log.i("Detail", "position===========================" + position);
-        player.release();
+//        player.release();
         position--;
         musicUri = datas.get(position).musicUri;
 
@@ -234,6 +255,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         txtTitleP.setText(datas.get(position).title);
         txtSingerP.setText(datas.get(position).artist);
         viewPager.setCurrentItem(position);
+
+        int a = player.getDuration(); // 노래의 재생시간(miliSecond)
+        new SeekBarThread().start(); // 씨크바 그려줄 쓰레드 시작
+        seekBar.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
+
+        isPlaying = true; // 씨크바 쓰레드 반복 하도록
     }
 
     //유튜브에 관한 메소드

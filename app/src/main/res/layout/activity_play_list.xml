@@ -98,6 +98,24 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
+
+        <ImageButton
+            android:id="@+id/btnPauseL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/btnPlayL"
+            android:layout_alignTop="@+id/btnPlayL"
+            android:visibility="gone"
+            app:srcCompat="@android:drawable/ic_media_pause" />
+
+        <ImageButton
+            android:id="@+id/btnReStartL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/btnPlayL"
+            android:layout_alignTop="@+id/txtTitleL"
+            android:visibility="gone"
+            app:srcCompat="@android:drawable/ic_media_play" />
     </RelativeLayout>
 
 </RelativeLayout>
