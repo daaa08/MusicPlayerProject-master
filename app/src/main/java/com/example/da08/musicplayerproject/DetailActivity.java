@@ -110,6 +110,24 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                txtTitleP.setText(datas.get(position).title);
+                txtSingerP.setText(datas.get(position).artist);
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
