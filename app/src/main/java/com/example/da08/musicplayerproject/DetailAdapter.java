@@ -28,12 +28,12 @@ public class DetailAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = LayoutInflater
-                .from(container.getContext())
+        View view = LayoutInflater.from(container.getContext())
                 .inflate(R.layout.detail_item, null);
         ImageView imageViewD = (ImageView) view.findViewById(R.id.imageViewD);
         Glide.with(container.getContext())
-                .load(datas.get(position).albumArt).placeholder(R.mipmap.ic_launcher_round)
+                .load(datas.get(position).albumArt)
+                .placeholder(R.mipmap.ic_launcher_round)
                 .bitmapTransform(new CropCircleTransformation(container.getContext()))
                 .into(imageViewD);
 

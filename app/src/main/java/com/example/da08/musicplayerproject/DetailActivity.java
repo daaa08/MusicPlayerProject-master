@@ -25,7 +25,9 @@ import java.util.List;
 
 import static com.example.da08.musicplayerproject.domain.CurrentMusic.currentPosition;
 
-
+/**
+ * 클래스 : 나는 뭐하는 놈입니다~
+ */
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener, ThumbNailAdapter.StartYoutube {
 
     Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -46,6 +48,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     Boolean isPlaying = false;
 
 
+    /**
+     * 설명
+     */
     class SeekBarThread extends Thread {
 
         @Override
@@ -54,10 +59,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
 
             while (isPlaying) {
-                    seekBar.setProgress(player.getCurrentPosition());
                 try {
+                    seekBar.setProgress(player.getCurrentPosition());
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -79,7 +84,55 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         }
 
+        setViews();
 
+        txtTitleP.setText(datas.get(position).title);
+        txtSingerP.setText(datas.get(position).artist);
+        
+        btnPlayP.setOnClickListener(this);
+        btnPreP.setOnClickListener(this);
+        btnNextP.setOnClickListener(this);
+        btnShareP.setOnClickListener(this);
+        btnUploadP.setOnClickListener(this);
+        btnLikeP.setOnClickListener(this);
+        btnClose.setOnClickListener(this);
+        btnPauseP.setOnClickListener(this);
+        btnReStartP.setOnClickListener(this);
+
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(position);
+        viewPager.addOnPageChangeListener(pageChangeListener);
+
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                isPlaying = true;
+                int userControl = seekBar.getProgress(); // 사용자가 움직여놓은 위치
+                player.seekTo(userControl);
+//                player.start();
+//                new SeekBarThread().start();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+//                isPlaying = false;
+//                player.pause();
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                if (seekBar.getMax() == progress) {
+//                    isPlaying = false;
+//                    player.stop();
+//                }
+            }
+
+        });
+    }
+
+    private void setViews(){
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         txtTitleP = (TextView) findViewById(R.id.txtTitleP);
         txtSingerP = (TextView) findViewById(R.id.txtSingerP);
@@ -93,69 +146,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         btnClose = (ImageButton) findViewById(R.id.btnClose);
         btnPauseP = (ImageButton) findViewById(R.id.btnPauseP);
         btnReStartP = (ImageButton) findViewById(R.id.btnReStartP);
-
-        txtTitleP.setText(datas.get(position).title);
-        txtSingerP.setText(datas.get(position).artist);
-
-
-        btnPlayP.setOnClickListener(this);
-        btnPreP.setOnClickListener(this);
-        btnNextP.setOnClickListener(this);
-        btnShareP.setOnClickListener(this);
-        btnUploadP.setOnClickListener(this);
-        btnLikeP.setOnClickListener(this);
-        btnClose.setOnClickListener(this);
-        btnPauseP.setOnClickListener(this);
-        btnReStartP.setOnClickListener(this);
-
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(position);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                txtTitleP.setText(datas.get(position).title);
-                txtSingerP.setText(datas.get(position).artist);
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                isPlaying = true;
-                int userControl = seekBar.getProgress(); // 사용자가 움직여놓은 위치
-                player.seekTo(userControl);
-                player.start();
-                new SeekBarThread().start();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                isPlaying = false;
-                player.pause();
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (seekBar.getMax() == progress) {
-                    isPlaying = false;
-                    player.stop();
-                }
-            }
-
-        });
     }
 
 
@@ -167,7 +157,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.btnPlayP:
-                play(position);
+                play();
                 btnPlayP.setVisibility(View.INVISIBLE);
                 btnPauseP.setVisibility(View.VISIBLE);
                 break;
@@ -184,13 +174,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 youtubeSearch(datas.get(position).title,
                         datas.get(position).artist);
                 break;
+
             case R.id.btnLikeP:
 
                 break;
             case R.id.btnClose:
                 this.finish();
                 break;
-
             case R.id.btnPauseP:
                 player.pause();
                 isPlaying = false;
@@ -202,12 +192,17 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 player.start(); // 시작
                 isPlaying = true; // 재생하도록 flag 변경
 //                new SeekBarThread().start(); // 쓰레드 시작
+
                 btnPauseP.setVisibility(View.VISIBLE);
                 btnReStartP.setVisibility(View.INVISIBLE);
+                play();
                 break;
         }
     }
 
+    /**
+     * 설명
+     */
     private void sharing() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
@@ -217,7 +212,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(chooser);
     }
 
-    private void play(int position) {
+    SeekBarThread seekBarThread = null;
+
+    private void play() {
         musicUri = datas.get(position).musicUri;
         if (player != null) {
             player.release();
@@ -228,7 +225,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         int a = player.getDuration(); // 노래의 재생시간(miliSecond)
         seekBar.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-        new SeekBarThread().start(); // 씨크바 그려줄 쓰레드 시작
+        if(seekBarThread == null) {
+            seekBarThread = new SeekBarThread();
+            seekBarThread.start(); // 씨크바 그려줄 쓰레드 시작
+        }
         isPlaying = true; // 씨크바 쓰레드 반복 하도록
     }
 
@@ -248,15 +248,17 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         txtSingerP.setText(datas.get(position).artist);
         viewPager.setCurrentItem(position);
 
-        int a = player.getDuration(); // 노래의 재생시간(miliSecond)
-        new SeekBarThread().start(); // 씨크바 그려줄 쓰레드 시작
-        seekBar.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
+        int a = player.getDuration();
+        seekBar.setMax(a);
 
-        isPlaying = true; // 씨크바 쓰레드 반복 하도록
+        isPlaying = true;
 
 
     }
 
+    /**
+     *
+     */
     public void Pre() {
         Log.i("Detail", "position===========================" + position);
 //        player.release();
@@ -274,14 +276,17 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         txtSingerP.setText(datas.get(position).artist);
         viewPager.setCurrentItem(position);
 
-        int a = player.getDuration(); // 노래의 재생시간(miliSecond)
-        new SeekBarThread().start(); // 씨크바 그려줄 쓰레드 시작
-        seekBar.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
+        int a = player.getDuration();
+        seekBar.setMax(a);
 
-        isPlaying = true; // 씨크바 쓰레드 반복 하도록
+        isPlaying = true;
     }
 
-    //유튜브에 관한 메소드
+    /**
+     * 메소드 전체 설명
+     * @param name 노래제목
+     * @param artist 가수
+     */
     private void youtubeSearch(String name, String artist) {
         YoutubeDialog dialog = new YoutubeDialog(this, name, artist);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -305,6 +310,24 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         Intent intent = YouTubeStandalonePlayer.createVideoIntent(this, Const.Auth.API_KEY, videoId);
         startActivity(intent);
     }
+
+    ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            txtTitleP.setText(datas.get(position).title);
+            txtSingerP.setText(datas.get(position).artist);
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 }
 
 
