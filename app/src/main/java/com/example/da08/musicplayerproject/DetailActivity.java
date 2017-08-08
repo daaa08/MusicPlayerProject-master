@@ -26,7 +26,7 @@ import java.util.List;
 import static com.example.da08.musicplayerproject.domain.CurrentMusic.currentPosition;
 
 /**
- * 클래스 : 나는 뭐하는 놈입니다~
+ *  상세보기 페이지
  */
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener, ThumbNailAdapter.StartYoutube {
 
@@ -49,15 +49,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
 
     /**
-     * 설명
+     * seekbar 스레드
      */
     class SeekBarThread extends Thread {
 
         @Override
         public void run() {
             // 씨크바 막대기 조금씩 움직이기 (노래 끝날 때까지 반복)
-
-
             while (isPlaying) {
                 try {
                     seekBar.setProgress(player.getCurrentPosition());
@@ -201,7 +199,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     /**
-     * 설명
+     * 공유 기능
      */
     private void sharing() {
         Intent intent = new Intent();
@@ -257,7 +255,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     /**
-     *
+     * 현재 진행중인 곡의 이전 버튼 클릭할 경우 발생하는 이벤트 정의
      */
     public void Pre() {
         Log.i("Detail", "position===========================" + position);
